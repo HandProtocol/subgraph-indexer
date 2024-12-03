@@ -3,6 +3,10 @@
     "Scorer": {
       "address": "0x48c128c6C7c9360898F156cE7039979768DA4134",
       "startBlock": 102683455
+    },
+    "nCookieJar": {
+      "address": "0xF47c6040536D1A1584e4BEe580d65014E2fC55fE",
+      "startBlock": 103057052
     }
   }
 }

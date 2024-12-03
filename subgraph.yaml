@@ -16,16 +16,10 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AdminAdded
-        - AdminRemoved
-        - Initialized
-        - OwnershipTransferred
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-        - ScoreTypeAdded
-        - ScoreTypeRemoved
-        - ScoreUpdated
+        - User
+        - Score
+        - ScoreType
+        - Admin
       abis:
         - name: Scorer
           file: ./abis/Scorer.json
@@ -34,16 +28,6 @@ dataSources:
           handler: handleAdminAdded
         - event: AdminRemoved(indexed address)
           handler: handleAdminRemoved
-        - event: Initialized(uint64)
-          handler: handleInitialized
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
         - event: ScoreTypeAdded(string)
           handler: handleScoreTypeAdded
         - event: ScoreTypeRemoved(string)
@@ -51,3 +35,41 @@ dataSources:
         - event: ScoreUpdated(indexed address,string,uint256,uint256)
           handler: handleScoreUpdated
       file: ./src/scorer.ts
+  - kind: ethereum
+    name: nCookieJar
+    network: arbitrum-sepolia
+    source:
+      address: "0xF47c6040536D1A1584e4BEe580d65014E2fC55fE"
+      abi: nCookieJar
+      startBlock: 103057052
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AllowedAmountUpdated
+        - Claimed
+        - Deposit
+        - Initialized
+        - OwnershipTransferred
+        - RoundUpdated
+        - Withdraw
+      abis:
+        - name: nCookieJar
+          file: ./abis/nCookieJar.json
+      eventHandlers:
+        - event: AllowedAmountUpdated(indexed address,indexed address,uint256)
+          handler: handleAllowedAmountUpdated
+        - event: Claimed(indexed address,indexed address,uint256)
+          handler: handleClaimed
+        - event: Deposit(indexed address,indexed address,uint256)
+          handler: handleDeposit
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RoundUpdated(uint256,uint256,string)
+          handler: handleRoundUpdated
+        - event: Withdraw(indexed address,indexed address,uint256)
+          handler: handleWithdraw
+      file: ./src/n-cookie-jar.ts

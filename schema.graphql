@@ -1,89 +1,87 @@
-type AdminAdded @entity(immutable: true) {
-  id: Bytes!
-  admin: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+# scorer
+
+type User @entity {
+  id: ID! # Address of the user
+  scores: [Score!]!
+  totalScore: BigInt! # Sum of all scores
+  createdAt: BigInt! # Timestamp when the user was created
+  donations: [Donation!]! # List of donated tokens
+  allocations: [Allocation!]! # Allocation history
 }
 
-type AdminRemoved @entity(immutable: true) {
-  id: Bytes!
-  admin: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Score @entity {
+  id: ID! # Combination of user address + scoreType
+  user: User! # Relationship to User
+  scoreType: String! # Type of the score
+  value: BigInt! # Score value
 }
 
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint64
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type ScoreType @entity {
+  id: ID! # The name of the score type
 }
 
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Admin @entity {
+  id: ID! # Address of the admin
+  appointedAt: BigInt! # Timestamp when the admin was appointed
 }
 
-type RoleAdminChanged @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  previousAdminRole: Bytes! # bytes32
-  newAdminRole: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Round @entity {
+  id: ID! # Unique identifier for the round
+  start: BigInt! # Start timestamp
+  end: BigInt! # End timestamp
+  metadataURI: String! # IPFS URI for round metadata
+  allocatedTokens: [AllocatedToken!]! @derivedFrom(field: "round") # Allocated tokens in this round
+  claimedTokens: [ClaimedToken!]! @derivedFrom(field: "round") # Claimed tokens in this round
 }
 
-type RoleGranted @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Donation @entity {
+  id: ID! # Unique identifier (user + token + timestamp)
+  user: User! # The user who donated
+  token: String! # Token contract address (or "ETHER" for Ether)
+  amount: BigInt! # Amount donated
+  timestamp: BigInt! # Block timestamp of the donation
 }
 
-type RoleRevoked @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Allocation @entity {
+  id: ID! # Unique identifier (user + token + round)
+  user: User! # The user to whom tokens are allocated
+  token: String! # Token contract address (or "ETHER" for Ether)
+  amount: BigInt! # Amount allocated
+  status: AllocationStatus! # Claimed, Pending, or Unclaimed
+  round: Round! # Round associated with this allocation
+  timestamp: BigInt! # Block timestamp of the allocation
 }
 
-type ScoreTypeAdded @entity(immutable: true) {
-  id: Bytes!
-  scoreType: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type AllocatedToken @entity {
+  id: ID! # Unique identifier (round + token)
+  round: Round! # The round associated with the allocation
+  token: String! # Token contract address (or "ETHER" for Ether)
+  amount: BigInt! # Amount allocated
 }
 
-type ScoreTypeRemoved @entity(immutable: true) {
-  id: Bytes!
-  scoreType: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type ClaimedToken @entity {
+  id: ID! # Unique identifier (round + user + token)
+  round: Round! # The round in which the claim was made
+  user: User! # The user who claimed the tokens
+  token: String! # Token contract address (or "ETHER" for Ether)
+  amount: BigInt! # Amount claimed
+  timestamp: BigInt! # Block timestamp of the claim
 }
 
-type ScoreUpdated @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  scoreType: String! # string
-  newScore: BigInt! # uint256
-  oldScore: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+enum AllocationStatus {
+  CLAIMED
+  PENDING
+  UNCLAIMED
+}
+
+type GlobalStats @entity {
+  id: ID! # Static ID for a singleton entity
+  totalClaimed: BigInt! # Total amount of tokens claimed through all rounds
+  uniqueClaimers: BigInt! # Total number of unique addresses that have claimed tokens
+}
+
+type TokenBalance @entity {
+  id: ID! # Token address (or "ETHER" for Ether)
+  token: String! # Token contract address (or "ETHER" for Ether)
+  amount: BigInt! # Total amount in the contract
 }
