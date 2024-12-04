@@ -69,7 +69,6 @@ type AllocatedToken @entity {
 
 type GlobalStats @entity {
   id: ID! # Static ID for a singleton entity
-  totalClaimed: BigInt! # Total amount of tokens claimed through all rounds
   timesClaimed: BigInt! # Total number of unique addresses that have claimed tokens
   timesAlloted: BigInt!
   totalUsers: BigInt!

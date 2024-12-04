@@ -129,10 +129,11 @@ export function handleClaimed(event: Claimed): void {
   );
   allocatedToken.claimedTimeStamp = event.block.timestamp;
 
+  allocatedToken.save();
+
   tokenBalance.amount = tokenBalance.amount.minus(event.params.amount);
   tokenBalance.save();
 
-  globalStats.totalClaimed = globalStats.totalClaimed.plus(event.params.amount);
   globalStats.timesClaimed = globalStats.timesClaimed.plus(BigInt.fromI32(1));
   globalStats.save();
 }
