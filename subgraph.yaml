@@ -64,12 +64,25 @@ dataSources:
           handler: handleClaimed
         - event: Deposit(indexed address,indexed address,uint256)
           handler: handleDeposit
-        - event: Initialized(uint64)
-          handler: handleInitialized
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
+        # - event: Initialized(uint64)
+        #   handler: handleInitialized
+        # - event: OwnershipTransferred(indexed address,indexed address)
+        #   handler: handleOwnershipTransferred
         - event: RoundUpdated(uint256,uint256,string)
           handler: handleRoundUpdated
         - event: Withdraw(indexed address,indexed address,uint256)
           handler: handleWithdraw
       file: ./src/n-cookie-jar.ts
+templates:
+  - kind: file/ipfs
+    name: RoundMetadata
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RoundMetadata
+      file: ./src/round-metadata.ts
+      handler: handleRoundMetadata
+      abis:
+        - name: RoundMetadata
+          file: ./abis/RoundMetadata.json

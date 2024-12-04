@@ -2,11 +2,11 @@
 
 type User @entity {
   id: ID! # Address of the user
-  scores: [Score!]!
+  scores: [Score!] @derivedFrom(field: "user") # List of scores
   totalScore: BigInt! # Sum of all scores
   createdAt: BigInt! # Timestamp when the user was created
-  donations: [Donation!]! # List of donated tokens
-  allocations: [Allocation!]! # Allocation history
+  donations: [Donation!] @derivedFrom(field: "user") # List of donated tokens
+  allocations: [Allocation!] @derivedFrom(field: "user") # Allocation history
 }
 
 type Score @entity {
@@ -29,9 +29,22 @@ type Round @entity {
   id: ID! # Unique identifier for the round
   start: BigInt! # Start timestamp
   end: BigInt! # End timestamp
-  metadataURI: String! # IPFS URI for round metadata
-  allocatedTokens: [AllocatedToken!]! @derivedFrom(field: "round") # Allocated tokens in this round
-  claimedTokens: [ClaimedToken!]! @derivedFrom(field: "round") # Claimed tokens in this round
+  metadataURI: RoundMetadata! # IPFS URI for round metadata
+  allocatedTokens: [AllocatedToken!] @derivedFrom(field: "round") # Allocated tokens in this round
+  claimedTokens: [ClaimedToken!] @derivedFrom(field: "round") # Claimed tokens in this round
+  name: String! # Name of the round
+  description: String! # Description of the round
+  logo: String! # Logo of the round
+  banner: String! # Banner of the round
+  createdAt: BigInt! # Timestamp when the round was created
+}
+
+type RoundMetadata @entity {
+  id: ID! # ipfs CID
+  name: String! # Name of the round
+  description: String! # Description of the round
+  image: String # Logo of the round
+  external_url: String
 }
 
 type Donation @entity {

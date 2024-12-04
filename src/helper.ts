@@ -1,17 +1,17 @@
 // helper functions
 
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { GlobalStats, TokenBalance, User } from "../generated/schema";
 
-export function loadOrCreateUser(userAddress: string): User {
+export function loadOrCreateUser(
+  userAddress: string,
+  event: ethereum.Event
+): User {
   let user = User.load(userAddress);
   if (!user) {
     user = new User(userAddress);
-    user.scores = [];
     user.totalScore = BigInt.zero();
-    user.createdAt = BigInt.zero();
-    user.donations = [];
-    user.allocations = [];
+    user.createdAt = event.block.timestamp;
     user.save();
   }
   return user;

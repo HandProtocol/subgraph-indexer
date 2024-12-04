@@ -32,7 +32,7 @@ export function handleScoreTypeRemoved(event: ScoreTypeRemoved): void {
 }
 
 export function handleScoreUpdated(event: ScoreUpdated): void {
-  const user = loadOrCreateUser(event.params.user.toHex());
+  const user = loadOrCreateUser(event.params.user.toHex(), event);
 
   let scoreId = `${user.id}-${event.params.scoreType}`;
   let score = Score.load(scoreId);

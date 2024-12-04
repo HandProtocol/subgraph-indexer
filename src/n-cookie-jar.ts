@@ -6,7 +6,8 @@ import {
   RoundUpdated,
 } from "../generated/nCookieJar/nCookieJar";
 import { Donation, Round, Allocation, ClaimedToken } from "../generated/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { RoundMetadata as RoundMetadataTemplate } from "../generated/templates";
+import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
 import {
   loadOrCreateGlobalStats,
   loadOrCreateTokenBalance,
@@ -16,7 +17,7 @@ import {
 // event handlers
 
 export function handleDeposit(event: Deposit): void {
-  let user = loadOrCreateUser(event.params.depositor.toHex());
+  let user = loadOrCreateUser(event.params.depositor.toHex(), event);
   let tokenBalance = loadOrCreateTokenBalance(event.params.token.toHex());
 
   let donationId =
@@ -33,7 +34,7 @@ export function handleDeposit(event: Deposit): void {
 }
 
 export function handleClaimed(event: Claimed): void {
-  let user = loadOrCreateUser(event.params.claimant.toHex());
+  let user = loadOrCreateUser(event.params.claimant.toHex(), event);
   let tokenBalance = loadOrCreateTokenBalance(event.params.token.toHex());
   let globalStats = loadOrCreateGlobalStats();
 
@@ -67,7 +68,7 @@ export function handleClaimed(event: Claimed): void {
 }
 
 export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
-  let user = loadOrCreateUser(event.params.user.toHex());
+  let user = loadOrCreateUser(event.params.user.toHex(), event);
 
   let allocationId = user.id + "-" + event.params.token.toHex() + "-current"; // Replace with current round logic
   let allocation = Allocation.load(allocationId);
@@ -87,10 +88,19 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
 
 export function handleRoundUpdated(event: RoundUpdated): void {
   let roundId = event.transaction.hash.toHex();
+  let ipfsMetadataURI = event.params.metadataURI;
+
   let round = new Round(roundId);
   round.start = event.params.start;
   round.end = event.params.end;
   round.metadataURI = event.params.metadataURI;
+  round.createdAt = event.block.timestamp;
+
+  // Extract CID from the IPFS URI
+  let ipfsHash = ipfsMetadataURI.replace("ipfs://", "");
+
+  RoundMetadataTemplate.create(ipfsHash);
+
   round.save();
 }
 
