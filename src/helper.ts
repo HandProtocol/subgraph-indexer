@@ -44,7 +44,6 @@ export function loadOrCreateGlobalStats(): GlobalStats {
   let globalStats = GlobalStats.load(GLOBAL_ID);
   if (!globalStats) {
     globalStats = new GlobalStats(GLOBAL_ID);
-    globalStats.totalClaimed = BigInt.zero();
     globalStats.timesClaimed = BigInt.zero();
     globalStats.timesAlloted = BigInt.zero();
     globalStats.totalUsers = BigInt.zero();
