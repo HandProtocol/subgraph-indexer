@@ -1,7 +1,12 @@
 // helper functions
 
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { GlobalStats, TokenBalance, User } from "../generated/schema";
+import {
+  CurrentRound,
+  GlobalStats,
+  TokenBalance,
+  User,
+} from "../generated/schema";
 
 export function loadOrCreateUser(
   userAddress: string,
@@ -37,4 +42,14 @@ export function loadOrCreateGlobalStats(): GlobalStats {
     globalStats.save();
   }
   return globalStats;
+}
+
+export function getCurrentRound(): CurrentRound {
+  let currentRound = CurrentRound.load("current");
+  if (!currentRound) {
+    throw new Error(
+      "A round must be initialized before the function that emits this event is called "
+    );
+  }
+  return currentRound;
 }

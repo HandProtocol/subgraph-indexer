@@ -6,7 +6,7 @@ type User @entity {
   totalScore: BigInt! # Sum of all scores
   createdAt: BigInt! # Timestamp when the user was created
   donations: [Donation!] @derivedFrom(field: "user") # List of donated tokens
-  allocations: [Allocation!] @derivedFrom(field: "user") # Allocation history
+  allocatedTokens: [AllocatedToken!] @derivedFrom(field: "user") # List of allocated tokens
 }
 
 type Score @entity {
@@ -31,7 +31,6 @@ type Round @entity {
   end: BigInt! # End timestamp
   metadataURI: RoundMetadata! # IPFS URI for round metadata
   allocatedTokens: [AllocatedToken!] @derivedFrom(field: "round") # Allocated tokens in this round
-  claimedTokens: [ClaimedToken!] @derivedFrom(field: "round") # Claimed tokens in this round
   createdAt: BigInt! # Timestamp when the round was created
 }
 
@@ -43,6 +42,12 @@ type RoundMetadata @entity {
   external_url: String
 }
 
+type CurrentRound @entity {
+  id: ID! # Unique identifier for the current round (can be 'current' as a static value)
+  round: Round! # Reference to the current Round
+  updatedAt: BigInt! # Timestamp when the current round was last updated
+}
+
 type Donation @entity {
   id: ID! # Unique identifier (user + token + timestamp)
   user: User! # The user who donated
@@ -51,36 +56,15 @@ type Donation @entity {
   timestamp: BigInt! # Block timestamp of the donation
 }
 
-type Allocation @entity {
+type AllocatedToken @entity {
   id: ID! # Unique identifier (user + token + round)
   user: User! # The user to whom tokens are allocated
   token: String! # Token contract address (or "ETHER" for Ether)
   amount: BigInt! # Amount allocated
-  status: AllocationStatus! # Claimed, Pending, or Unclaimed
   round: Round! # Round associated with this allocation
   timestamp: BigInt! # Block timestamp of the allocation
-}
-
-type AllocatedToken @entity {
-  id: ID! # Unique identifier (round + token)
-  round: Round! # The round associated with the allocation
-  token: String! # Token contract address (or "ETHER" for Ether)
-  amount: BigInt! # Amount allocated
-}
-
-type ClaimedToken @entity {
-  id: ID! # Unique identifier (round + user + token)
-  round: Round! # The round in which the claim was made
-  user: User! # The user who claimed the tokens
-  token: String! # Token contract address (or "ETHER" for Ether)
-  amount: BigInt! # Amount claimed
-  timestamp: BigInt! # Block timestamp of the claim
-}
-
-enum AllocationStatus {
-  CLAIMED
-  PENDING
-  UNCLAIMED
+  claimedTimeStamp: BigInt # Block timestamp at which the allocated amount is claimed
+  claimedAmount: BigInt! # Claimed Amount
 }
 
 type GlobalStats @entity {
