@@ -32,10 +32,6 @@ type Round @entity {
   metadataURI: RoundMetadata! # IPFS URI for round metadata
   allocatedTokens: [AllocatedToken!] @derivedFrom(field: "round") # Allocated tokens in this round
   claimedTokens: [ClaimedToken!] @derivedFrom(field: "round") # Claimed tokens in this round
-  name: String! # Name of the round
-  description: String! # Description of the round
-  logo: String! # Logo of the round
-  banner: String! # Banner of the round
   createdAt: BigInt! # Timestamp when the round was created
 }
 
