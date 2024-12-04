@@ -14,13 +14,12 @@ import {
 import { RoundMetadata as RoundMetadataTemplate } from "../generated/templates";
 import { BigInt } from "@graphprotocol/graph-ts";
 import {
+  CURRENT_ROUND_ID,
   getCurrentRound,
   loadOrCreateGlobalStats,
   loadOrCreateTokenBalance,
   loadOrCreateUser,
 } from "./helper";
-
-const CURRENT_ROUND_ID = "current";
 
 // event handlers
 
@@ -102,6 +101,11 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
   allocatedToken.timestamp = event.block.timestamp;
 
   allocatedToken.save();
+
+  let globalStats = loadOrCreateGlobalStats();
+  globalStats.timesAlloted = globalStats.timesAlloted.plus(BigInt.fromI32(1));
+
+  globalStats.save();
 }
 
 export function handleClaimed(event: Claimed): void {
@@ -129,6 +133,7 @@ export function handleClaimed(event: Claimed): void {
   tokenBalance.save();
 
   globalStats.totalClaimed = globalStats.totalClaimed.plus(event.params.amount);
+  globalStats.timesClaimed = globalStats.timesClaimed.plus(BigInt.fromI32(1));
   globalStats.save();
 }
 

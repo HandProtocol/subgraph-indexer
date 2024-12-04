@@ -8,6 +8,9 @@ import {
   User,
 } from "../generated/schema";
 
+export const CURRENT_ROUND_ID = "current";
+export const GLOBAL_ID = "global";
+
 export function loadOrCreateUser(
   userAddress: string,
   event: ethereum.Event
@@ -18,6 +21,10 @@ export function loadOrCreateUser(
     user.totalScore = BigInt.zero();
     user.createdAt = event.block.timestamp;
     user.save();
+
+    let globalStats = loadOrCreateGlobalStats();
+    globalStats.totalUsers = globalStats.totalUsers.plus(BigInt.fromI32(1));
+    globalStats.save();
   }
   return user;
 }
@@ -34,18 +41,20 @@ export function loadOrCreateTokenBalance(token: string): TokenBalance {
 }
 
 export function loadOrCreateGlobalStats(): GlobalStats {
-  let globalStats = GlobalStats.load("global");
+  let globalStats = GlobalStats.load(GLOBAL_ID);
   if (!globalStats) {
-    globalStats = new GlobalStats("global");
+    globalStats = new GlobalStats(GLOBAL_ID);
     globalStats.totalClaimed = BigInt.zero();
-    globalStats.uniqueClaimers = BigInt.zero();
+    globalStats.timesClaimed = BigInt.zero();
+    globalStats.timesAlloted = BigInt.zero();
+    globalStats.totalUsers = BigInt.zero();
     globalStats.save();
   }
   return globalStats;
 }
 
 export function getCurrentRound(): CurrentRound {
-  let currentRound = CurrentRound.load("current");
+  let currentRound = CurrentRound.load(CURRENT_ROUND_ID);
   if (!currentRound) {
     throw new Error(
       "A round must be initialized before the function that emits this event is called "
