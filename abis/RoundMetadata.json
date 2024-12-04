@@ -8,11 +8,11 @@
     "type": "string"
   },
   {
-    "name": "logo",
+    "name": "image",
     "type": "string"
   },
   {
-    "name": "banner",
+    "name": "external_url",
     "type": "string"
   }
 ]
