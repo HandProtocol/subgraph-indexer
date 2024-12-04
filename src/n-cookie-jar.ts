@@ -12,7 +12,7 @@ import {
   AllocatedToken,
 } from "../generated/schema";
 import { RoundMetadata as RoundMetadataTemplate } from "../generated/templates";
-import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   getCurrentRound,
   loadOrCreateGlobalStats,
@@ -90,8 +90,8 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
   }
 
   if (
-    allocatedToken.claimedAmount?.gt(BigInt.zero()) &&
-    allocatedToken?.amount.equals(allocatedToken.claimedAmount)
+    allocatedToken.claimedAmount.gt(BigInt.zero()) &&
+    allocatedToken.amount.equals(allocatedToken.claimedAmount)
   ) {
     // this mean now we are adding more amount to already claimed one for a address in this round
     allocatedToken.amount = allocatedToken.amount.plus(newAmount);

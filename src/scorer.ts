@@ -6,7 +6,7 @@ import {
   ScoreTypeRemoved,
   ScoreUpdated,
 } from "../generated/Scorer/Scorer";
-import { Admin, Score, ScoreType, User } from "../generated/schema";
+import { Admin, Score, ScoreType } from "../generated/schema";
 import { loadOrCreateUser } from "./helper";
 
 export function handleAdminAdded(event: AdminAdded): void {
