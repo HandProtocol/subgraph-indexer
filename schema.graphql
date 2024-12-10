@@ -1,5 +1,3 @@
-# scorer
-
 type User @entity {
   id: ID! # Address of the user
   scores: [Score!] @derivedFrom(field: "user") # List of scores
@@ -29,7 +27,7 @@ type Round @entity {
   id: ID! # Unique identifier for the round
   start: BigInt! # Start timestamp
   end: BigInt! # End timestamp
-  metadataURI: RoundMetadata! # IPFS URI for round metadata
+  metadata: RoundMetadata! # IPFS URI for round metadata
   allocatedTokens: [AllocatedToken!] @derivedFrom(field: "round") # Allocated tokens in this round
   createdAt: BigInt! # Timestamp when the round was created
 }

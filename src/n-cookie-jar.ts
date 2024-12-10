@@ -20,7 +20,7 @@ import {
   loadOrCreateTokenBalance,
   loadOrCreateUser,
 } from "./helper";
-
+import { log } from "@graphprotocol/graph-ts";
 // event handlers
 
 export function handleDeposit(event: Deposit): void {
@@ -47,11 +47,13 @@ export function handleRoundUpdated(event: RoundUpdated): void {
   let round = new Round(roundId);
   round.start = event.params.start;
   round.end = event.params.end;
-  round.metadataURI = event.params.metadataURI;
   round.createdAt = event.block.timestamp;
 
   // Extract CID from the IPFS URI
   let ipfsHash = ipfsMetadataURI.replace("ipfs://", "");
+  round.metadata = ipfsHash;
+
+  log.warning("ipfsHash: {} ", [ipfsHash]);
 
   RoundMetadataTemplate.create(ipfsHash);
 
