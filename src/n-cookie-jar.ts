@@ -21,11 +21,15 @@ import {
   loadOrCreateUser,
 } from "./helper";
 import { log } from "@graphprotocol/graph-ts";
+import { TokenBalanceType } from "./types";
 // event handlers
 
 export function handleDeposit(event: Deposit): void {
   let user = loadOrCreateUser(event.params.depositor.toHex(), event);
-  let tokenBalance = loadOrCreateTokenBalance(event.params.token.toHex());
+  let tokenBalance = loadOrCreateTokenBalance(
+    event.params.token.toHex(),
+    TokenBalanceType.TOTAL
+  );
 
   let donationId =
     event.transaction.hash.toHex() + "-" + event.logIndex.toString();
@@ -75,6 +79,11 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
   let user = loadOrCreateUser(event.params.user.toHex(), event);
   let currentRound = getCurrentRound();
 
+  let allocatedTokenBalance = loadOrCreateTokenBalance(
+    event.params.token.toHex(),
+    TokenBalanceType.ALLOCATED
+  );
+
   let allocatedTokenId =
     user.id + "-" + event.params.token.toHex() + "-" + currentRound.round;
   let allocatedToken = AllocatedToken.load(allocatedTokenId);
@@ -104,6 +113,9 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
 
   allocatedToken.save();
 
+  allocatedTokenBalance.amount = allocatedToken.amount.plus(newAmount);
+  allocatedTokenBalance.save();
+
   let globalStats = loadOrCreateGlobalStats();
   globalStats.timesAlloted = globalStats.timesAlloted.plus(BigInt.fromI32(1));
 
@@ -112,7 +124,14 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
 
 export function handleClaimed(event: Claimed): void {
   let user = loadOrCreateUser(event.params.claimant.toHex(), event);
-  let tokenBalance = loadOrCreateTokenBalance(event.params.token.toHex());
+  let tokenBalance = loadOrCreateTokenBalance(
+    event.params.token.toHex(),
+    TokenBalanceType.TOTAL
+  );
+  let claimedTokenBalance = loadOrCreateTokenBalance(
+    event.params.token.toHex(),
+    TokenBalanceType.CLAIMED
+  );
   let globalStats = loadOrCreateGlobalStats();
 
   let currentRound = getCurrentRound();
@@ -136,12 +155,20 @@ export function handleClaimed(event: Claimed): void {
   tokenBalance.amount = tokenBalance.amount.minus(event.params.amount);
   tokenBalance.save();
 
+  claimedTokenBalance.amount = claimedTokenBalance.amount.plus(
+    event.params.amount
+  );
+  claimedTokenBalance.save();
+
   globalStats.timesClaimed = globalStats.timesClaimed.plus(BigInt.fromI32(1));
   globalStats.save();
 }
 
 export function handleWithdraw(event: Withdraw): void {
-  let tokenBalance = loadOrCreateTokenBalance(event.params.token.toHex());
+  let tokenBalance = loadOrCreateTokenBalance(
+    event.params.token.toHex(),
+    TokenBalanceType.TOTAL
+  );
   tokenBalance.amount = tokenBalance.amount.minus(event.params.amount);
   tokenBalance.save();
 }

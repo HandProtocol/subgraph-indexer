@@ -7,6 +7,7 @@ import {
   TokenBalance,
   User,
 } from "../generated/schema";
+import { TokenBalanceType } from "./types";
 
 export const CURRENT_ROUND_ID = "current";
 export const GLOBAL_ID = "global";
@@ -29,12 +30,17 @@ export function loadOrCreateUser(
   return user;
 }
 
-export function loadOrCreateTokenBalance(token: string): TokenBalance {
-  let tokenBalance = TokenBalance.load(token);
+export function loadOrCreateTokenBalance(
+  token: string,
+  type: TokenBalanceType
+): TokenBalance {
+  const typString = type.toString();
+  let tokenBalance = TokenBalance.load(token + "-" + typString);
   if (!tokenBalance) {
-    tokenBalance = new TokenBalance(token);
+    tokenBalance = new TokenBalance(token + "-" + typString);
     tokenBalance.token = token;
     tokenBalance.amount = BigInt.zero();
+    tokenBalance.type = typString;
     tokenBalance.save();
   }
   return tokenBalance;

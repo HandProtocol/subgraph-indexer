@@ -1,3 +1,9 @@
+enum TokenBalanceType {
+  TOTAL
+  CLAIMED
+  ALLOTED
+}
+
 type User @entity {
   id: ID! # Address of the user
   scores: [Score!] @derivedFrom(field: "user") # List of scores
@@ -73,7 +79,8 @@ type GlobalStats @entity {
 }
 
 type TokenBalance @entity {
-  id: ID! # Token address (or "ETHER" for Ether)
+  id: ID! # Token address (or "ETHER" for Ether) - Type ("Total", "Claimed", "Alloted" where total is for total balance in the contract, claimed is for claimed balance)
   token: String! # Token contract address (or "ETHER" for Ether)
   amount: BigInt! # Total amount in the contract
+  type: TokenBalanceType!
 }
