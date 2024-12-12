@@ -1,7 +1,7 @@
 enum TokenBalanceType {
   TOTAL
   CLAIMED
-  ALLOTED
+  ALLOCATED
 }
 
 type User @entity {

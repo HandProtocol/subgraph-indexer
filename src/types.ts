@@ -1,5 +1,11 @@
-export enum TokenBalanceType {
-  TOTAL = 0,
-  CLAIMED = 1,
-  ALLOCATED = 2,
+class TokenBalanceTypeClass {
+  TOTAL: string;
+  CLAIMED: string;
+  ALLOCATED: string;
 }
+
+export const TokenBalanceType: TokenBalanceTypeClass = {
+  TOTAL: "TOTAL",
+  CLAIMED: "CLAIMED",
+  ALLOCATED: "ALLOCATED",
+};

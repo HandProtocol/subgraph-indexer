@@ -32,7 +32,7 @@ export function loadOrCreateUser(
 
 export function loadOrCreateTokenBalance(
   token: string,
-  type: TokenBalanceType
+  type: string
 ): TokenBalance {
   const typString = type.toString();
   let tokenBalance = TokenBalance.load(token + "-" + typString);
