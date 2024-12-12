@@ -76,7 +76,7 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
   let currentRound = getCurrentRound();
 
   let allocatedTokenId =
-    user.id + "-" + event.params.token.toHex() + "-" + currentRound.id; // Replace with current round logic
+    user.id + "-" + event.params.token.toHex() + "-" + currentRound.round;
   let allocatedToken = AllocatedToken.load(allocatedTokenId);
 
   let newAmount = event.params.newAmount;
@@ -86,7 +86,7 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
     allocatedToken.user = user.id;
     allocatedToken.token = event.params.token.toHex();
     allocatedToken.amount = newAmount;
-    allocatedToken.round = currentRound.id;
+    allocatedToken.round = currentRound.round;
     allocatedToken.claimedAmount = BigInt.zero();
   }
 
@@ -118,7 +118,7 @@ export function handleClaimed(event: Claimed): void {
   let currentRound = getCurrentRound();
 
   let allocatedTokenId =
-    user.id + "-" + event.params.token.toHex() + "-" + currentRound.id;
+    user.id + "-" + event.params.token.toHex() + "-" + currentRound.round;
 
   let allocatedToken = AllocatedToken.load(allocatedTokenId);
   if (!allocatedToken) {
