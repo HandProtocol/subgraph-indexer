@@ -24,10 +24,10 @@ dataSources:
         - name: Scorer
           file: ./abis/Scorer.json
       eventHandlers:
-        - event: AdminAdded(indexed address)
-          handler: handleAdminAdded
-        - event: AdminRemoved(indexed address)
-          handler: handleAdminRemoved
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
         - event: ScoreTypeAdded(string)
           handler: handleScoreTypeAdded
         - event: ScoreTypeRemoved(string)

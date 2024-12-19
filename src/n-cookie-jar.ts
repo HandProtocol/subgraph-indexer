@@ -57,8 +57,6 @@ export function handleRoundUpdated(event: RoundUpdated): void {
   let ipfsHash = ipfsMetadataURI.replace("ipfs://", "");
   round.metadata = ipfsHash;
 
-  log.warning("ipfsHash: {} ", [ipfsHash]);
-
   RoundMetadataTemplate.create(ipfsHash);
 
   round.save();

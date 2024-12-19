@@ -1,7 +1,7 @@
-import { BigInt, store } from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, crypto, log, store } from "@graphprotocol/graph-ts";
 import {
-  AdminAdded,
-  AdminRemoved,
+  RoleGranted,
+  RoleRevoked,
   ScoreTypeAdded,
   ScoreTypeRemoved,
   ScoreUpdated,
@@ -9,14 +9,24 @@ import {
 import { Admin, Score, ScoreType } from "../generated/schema";
 import { loadOrCreateUser } from "./helper";
 
-export function handleAdminAdded(event: AdminAdded): void {
-  let admin = new Admin(event.params.admin.toHex());
+export const ADMIN_ROLE_HEX = crypto
+  .keccak256(ByteArray.fromUTF8("ADMIN_ROLE"))
+  .toHex();
+
+export function handleRoleGranted(event: RoleGranted): void {
+  const isAdminRoleGranted =
+    event.params.role.toHex().trim().toLowerCase() ==
+    ADMIN_ROLE_HEX.trim().toLowerCase();
+  if (!isAdminRoleGranted) return;
+  let admin = new Admin(event.params.account.toHex());
   admin.appointedAt = event.block.timestamp;
   admin.save();
 }
 
-export function handleAdminRemoved(event: AdminRemoved): void {
-  let adminId = event.params.admin.toHex();
+export function handleRoleRevoked(event: RoleRevoked): void {
+  const isAdminRoleRevoked = event.params.role.toHex() == ADMIN_ROLE_HEX;
+  if (!isAdminRoleRevoked) return;
+  let adminId = event.params.account.toHex();
   store.remove("Admin", adminId);
 }
 
