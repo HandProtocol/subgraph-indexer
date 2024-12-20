@@ -20,7 +20,6 @@ import {
   loadOrCreateTokenBalance,
   loadOrCreateUser,
 } from "./helper";
-import { log } from "@graphprotocol/graph-ts";
 import { TokenBalanceType } from "./types";
 // event handlers
 
@@ -55,6 +54,7 @@ export function handleRoundUpdated(event: RoundUpdated): void {
 
   // Extract CID from the IPFS URI
   let ipfsHash = ipfsMetadataURI.replace("ipfs://", "");
+  if (!ipfsHash) return;
   round.metadata = ipfsHash;
 
   RoundMetadataTemplate.create(ipfsHash);
