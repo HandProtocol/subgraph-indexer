@@ -36,10 +36,10 @@ dataSources:
           handler: handleScoreUpdated
       file: ./src/scorer.ts
   - kind: ethereum
-    name: nCookieJar
+    name: sweetspot
     network: celo-alfajores
     source:
-      abi: nCookieJar
+      abi: sweetspot
       address: "0xa6e35CCf2950c637AF0F06e162A3991f50CE210f"
       startBlock: 33640795
     mapping:
@@ -55,8 +55,8 @@ dataSources:
         - RoundUpdated
         - Withdraw
       abis:
-        - name: nCookieJar
-          file: ./abis/nCookieJar.json
+        - name: sweetspot
+          file: ./abis/sweetspot.json
       eventHandlers:
         - event: AllowedAmountUpdated(indexed address,indexed address,uint256)
           handler: handleAllowedAmountUpdated
@@ -68,7 +68,7 @@ dataSources:
           handler: handleRoundUpdated
         - event: Withdraw(indexed address,indexed address,uint256)
           handler: handleWithdraw
-      file: ./src/n-cookie-jar.ts
+      file: ./src/sweetspot.ts
 templates:
   - kind: file/ipfs
     name: RoundMetadata
