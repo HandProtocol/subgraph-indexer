@@ -4,7 +4,7 @@ import {
   Claimed,
   AllowedAmountUpdated,
   RoundUpdated,
-} from "../generated/nCookieJar/nCookieJar"
+} from "../generated/sweetspot/sweetspot"
 import {
   Donation,
   Round,
@@ -87,6 +87,22 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
 
   let newAmount = event.params.newAmount
 
+  // If allocation is being cleared (newAmount = 0)
+  if (newAmount.equals(BigInt.zero())) {
+    if (allocatedToken) {
+      // Subtract the previous allocation from total allocated balance
+      allocatedTokenBalance.amount = allocatedTokenBalance.amount.minus(
+        allocatedToken.amount
+      )
+      allocatedTokenBalance.save()
+
+      // Remove the allocation entirely
+      allocatedToken.amount = BigInt.zero()
+      allocatedToken.save()
+    }
+    return
+  }
+
   if (!allocatedToken) {
     allocatedToken = new AllocatedToken(allocatedTokenId)
     allocatedToken.user = user.id
@@ -96,26 +112,30 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
     allocatedToken.claimedAmount = BigInt.zero()
   }
 
+  // Handle updating existing allocation
   if (
     allocatedToken.claimedAmount.gt(BigInt.zero()) &&
     allocatedToken.amount.equals(allocatedToken.claimedAmount)
   ) {
-    // this mean now we are adding more amount to already claimed one for a address in this round
     allocatedToken.amount = allocatedToken.amount.plus(newAmount)
   } else {
+    // Subtract old amount from total balance before setting new amount
+    if (allocatedToken.amount.gt(BigInt.zero())) {
+      allocatedTokenBalance.amount = allocatedTokenBalance.amount.minus(
+        allocatedToken.amount
+      )
+    }
     allocatedToken.amount = newAmount
   }
 
   allocatedToken.timestamp = event.block.timestamp
-
   allocatedToken.save()
 
-  allocatedTokenBalance.amount = allocatedToken.amount.plus(newAmount)
+  allocatedTokenBalance.amount = allocatedTokenBalance.amount.plus(newAmount)
   allocatedTokenBalance.save()
 
   let globalStats = loadOrCreateGlobalStats()
   globalStats.timesAlloted = globalStats.timesAlloted.plus(BigInt.fromI32(1))
-
   globalStats.save()
 }
 

@@ -21,6 +21,17 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "scoreType",
+        "type": "string"
+      }
+    ],
+    "name": "DuplicateScoreType",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "InvalidInitialization",
     "type": "error"
@@ -50,6 +61,17 @@
       }
     ],
     "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "scoreType",
+        "type": "string"
+      }
+    ],
+    "name": "ScoreTypeNotFound",
     "type": "error"
   },
   {
@@ -459,9 +481,9 @@
     "name": "score",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "stateMutability": "view",
@@ -499,9 +521,9 @@
         "type": "string"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "newScore",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "setScore",
