@@ -12,7 +12,7 @@ import {
   AllocatedToken,
 } from "../generated/schema"
 import { RoundMetadata as RoundMetadataTemplate } from "../generated/templates"
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, store } from "@graphprotocol/graph-ts"
 import {
   CURRENT_ROUND_ID,
   getCurrentRound,
@@ -96,9 +96,8 @@ export function handleAllowedAmountUpdated(event: AllowedAmountUpdated): void {
       )
       allocatedTokenBalance.save()
 
-      // Remove the allocation entirely
-      allocatedToken.amount = BigInt.zero()
-      allocatedToken.save()
+      // delete the allocated token as it is no longer allocated
+      store.remove("AllocatedToken", allocatedTokenId)
     }
     return
   }
