@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Scorer
-    network: celo-alfajores
+    network: celo
     source:
       abi: Scorer
-      address: "0x9E2851e9Cb3425BeAC4A18071505BaaE77e3BdEb"
-      startBlock: 33639850
+      address: "0x517082d63bE128bAF9413C898a957d79E3A3A452"
+      startBlock: 30738364
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -37,11 +37,11 @@ dataSources:
       file: ./src/scorer.ts
   - kind: ethereum
     name: sweetspot
-    network: celo-alfajores
+    network: celo
     source:
       abi: sweetspot
-      address: "0xa6e35CCf2950c637AF0F06e162A3991f50CE210f"
-      startBlock: 33640795
+      address: "0xeC6D8F428a1e97d0988744BDeD2AE1e4b8D97344"
+      startBlock: 30739455
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -82,4 +82,4 @@ templates:
       abis:
         - name: RoundMetadata
           file: ./abis/RoundMetadata.json
-    network: celo-alfajores
+    network: celo
